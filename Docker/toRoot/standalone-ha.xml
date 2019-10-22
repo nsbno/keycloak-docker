@@ -370,6 +370,16 @@
                         </property>
                         <property name="remove_all_data_on_view_change">true</property>
                     </jdbc-protocol>
+                    <protocol type="MERGE3"/>
+                    <protocol type="FD_SOCK"/>
+                    <protocol type="FD_ALL"/>
+                    <protocol type="VERIFY_SUSPECT"/>
+                    <protocol type="pbcast.NAKACK2"/>
+                    <protocol type="UNICAST3"/>
+                    <protocol type="pbcast.STABLE"/>
+                    <protocol type="pbcast.GMS"/>
+                    <protocol type="MFC"/>
+                    <protocol type="FRAG3"/>
                 </stack>
             </stacks>
         </subsystem>
