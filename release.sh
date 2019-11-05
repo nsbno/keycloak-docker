@@ -3,6 +3,11 @@
 ECR_ENDPOINT="592256481107.dkr.ecr.eu-west-1.amazonaws.com"
 REGION="eu-west-1"
 
+if [ $# -eq 0 ]; then
+  echo "Usage: $0 <version>"
+  exit 1
+fi
+
 version=${1}
 
 $(aws ecr get-login --region "${REGION}" --no-include-email) || echo "Unable to access AWS ECR. Make sure you have valid credentials"
