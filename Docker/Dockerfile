@@ -2,9 +2,10 @@ FROM openjdk:alpine
 
 ENV USER=keycloak
 ENV HOME=/home/$USER
-ENV KEYCLOAK_VERSION=7.0.0 \
+ENV KEYCLOAK_VERSION=7.0.1 \
     LAUNCH_JBOSS_IN_BACKGROUND=true \
-    DISTRIBUTED_CACHE_OWNERS=1
+    DISTRIBUTED_CACHE_OWNERS=1 \
+    WHITELIST_IP=127.0.0.1
 
 RUN apk --no-cache add \
     ca-certificates \

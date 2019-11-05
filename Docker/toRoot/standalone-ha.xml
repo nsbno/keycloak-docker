@@ -583,8 +583,12 @@
                 <host name="default-host" alias="localhost">
                     <location name="/" handler="welcome-content"/>
                     <http-invoker security-realm="ApplicationRealm"/>
+                    <filter-ref name="ipAccess" />
                 </host>
             </server>
+            <filters>
+                <expression-filter name="ipAccess" expression="path-prefix('/auth/admin') -> ip-access-control(acl={'${env.WHITELIST_IP}/32 allow'})"/>
+            </filters>
             <servlet-container name="default">
                 <jsp-config/>
                 <websockets/>
