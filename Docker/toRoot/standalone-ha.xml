@@ -269,6 +269,10 @@
                 <distributed-cache name="clientSessions" owners="${env.DISTRIBUTED_CACHE_OWNERS}"/>
                 <distributed-cache name="offlineClientSessions" owners="${env.DISTRIBUTED_CACHE_OWNERS}"/>
                 <distributed-cache name="loginFailures" owners="${env.DISTRIBUTED_CACHE_OWNERS}"/>
+                <distributed-cache name="actionTokens" owners="${env.DISTRIBUTED_CACHE_OWNERS}">
+                    <object-memory size="-1"/>
+                    <expiration max-idle="-1" interval="300000"/>
+                </distributed-cache>
                 <local-cache name="authorization">
                     <object-memory size="10000"/>
                 </local-cache>
@@ -277,10 +281,6 @@
                     <object-memory size="1000"/>
                     <expiration max-idle="3600000"/>
                 </local-cache>
-                <distributed-cache name="actionTokens" owners="2">
-                    <object-memory size="-1"/>
-                    <expiration max-idle="-1" interval="300000"/>
-                </distributed-cache>
             </cache-container>
             <cache-container name="server" aliases="singleton cluster" default-cache="default" module="org.wildfly.clustering.server">
                 <transport lock-timeout="60000"/>
