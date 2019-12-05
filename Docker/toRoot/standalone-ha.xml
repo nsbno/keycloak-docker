@@ -368,7 +368,7 @@
                 <distributed-cache name="clientSessions" owners="${env.DISTRIBUTED_CACHE_OWNERS}"/>
                 <distributed-cache name="offlineClientSessions" owners="${env.DISTRIBUTED_CACHE_OWNERS}"/>
                 <distributed-cache name="loginFailures" owners="${env.DISTRIBUTED_CACHE_OWNERS}"/>
-                <distributed-cache name="actionTokens" owners="2">
+                <distributed-cache name="actionTokens" owners="${env.DISTRIBUTED_CACHE_OWNERS}">
                     <object-memory size="-1"/>
                     <expiration interval="300000" max-idle="-1"/>
                 </distributed-cache>
