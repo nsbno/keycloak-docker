@@ -1,19 +1,30 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -e
 
-ECR_ENDPOINT="592256481107.dkr.ecr.eu-west-1.amazonaws.com"
+. "$NSB_SCRIPT_DIR/lib/input.sh"
+. "$NSB_SCRIPT_DIR/lib/output.sh"
+
+SERVICE_ACCOUNT="592256481107"
+ECR_ENDPOINT="${SERVICE_ACCOUNT}.dkr.ecr.eu-west-1.amazonaws.com"
+REPOSITORY_NAME="keycloak-base"
+IMAGE_NAME="${ECR_ENDPOINT}/${REPOSITORY_NAME}"
 REGION="eu-west-1"
 
-if [ $# -eq 0 ]; then
-  echo "Usage: $0 <version>"
-  exit 1
+if [ "x$(aws sts get-caller-identity 2>/dev/null | jq -r ".Account")" != "x$SERVICE_ACCOUNT" ]; then
+  error "You are missing valid API credentials for the service account. Please make sure you are logged in."
+  exit -1
 fi
 
-version=${1}
+aws ecr get-login --region "${REGION}" --no-include-email > /dev/null
 
-$(aws ecr get-login --region "${REGION}" --no-include-email) || echo "Unable to access AWS ECR. Make sure you have valid credentials"
+keycloak_version=$(grep -E "ENV KEYCLOAK_VERSION=[0-9]+(\.[0-9]+)?.*" Docker/Dockerfile | sed 's/.*VERSION=\([0-9\.]*\).*/\1/')
+prev_version=$(aws ecr describe-images --region ${REGION} --repository-name ${REPOSITORY_NAME} | jq -r ".imageDetails[].imageTags[]" | grep "${keycloak_version}" | awk -F- '{print $NF}' | sort -rn | head -1)
+version="${keycloak_version}-$((${prev_version:-0} + 1))"
 
-docker build -t "${ECR_ENDPOINT}/keycloak-base" Docker/
-docker tag "${ECR_ENDPOINT}/keycloak-base" "${ECR_ENDPOINT}/keycloak-base:7.0.1-${version}"
-docker push "${ECR_ENDPOINT}/keycloak-base:7.0.1-${version}"
-docker tag "${ECR_ENDPOINT}/keycloak-base" "${ECR_ENDPOINT}/keycloak-base:latest"
-docker push "${ECR_ENDPOINT}/keycloak-base:latest"
+info "Releasing version ${version}"
+
+docker build -t "${IMAGE_NAME}" Docker/
+docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:${version}"
+docker push "${IMAGE_NAME}:${version}"
+docker tag "${IMAGE_NAME}" "${IMAGE_NAME}:latest"
+docker push "${IMAGE_NAME}:latest"
