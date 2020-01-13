@@ -655,7 +655,7 @@
                 <host name="default-host" alias="localhost">
                     <location name="/" handler="welcome-content"/>
                     <http-invoker security-realm="ApplicationRealm"/>
-                    <access-log worker="default" rotate="true" use-server-log="true"/>
+                    <access-log worker="default" rotate="true" use-server-log="true" pattern="combined"/>
                 </host>
             </server>
             <servlet-container name="default">
