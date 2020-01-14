@@ -16,17 +16,19 @@ RUN apk --no-cache add \
   update-ca-certificates && \
   adduser -S $USER
 
-## Expose application port
-EXPOSE 8080 7600
+## Expose application port and administration port
+EXPOSE 8080 7600 9990
 
 COPY toRoot $HOME/
 
 RUN cd $HOME && \
-    mkdir -p $HOME/logs && \
     wget https://downloads.jboss.org/keycloak/$KEYCLOAK_VERSION/keycloak-$KEYCLOAK_VERSION.tar.gz &&\
     tar -xvf keycloak-${KEYCLOAK_VERSION}.tar.gz &&\
     rm keycloak-${KEYCLOAK_VERSION}.tar.gz && \
-    mv $HOME/keycloak-${KEYCLOAK_VERSION}/ $HOME/keycloak && \
+    mv $HOME/keycloak-${KEYCLOAK_VERSION}/ $HOME/keycloak
+
+RUN cd $HOME && \
+    mkdir -p $HOME/logs && \
     mkdir -p $HOME/keycloak/modules/org/postgres/main &&\
     cd $HOME/keycloak/modules/org/postgres/main &&\
     wget https://jdbc.postgresql.org/download/postgresql-42.2.5.jar && \
