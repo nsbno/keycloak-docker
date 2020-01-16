@@ -15,7 +15,7 @@ if [ "x$(aws sts get-caller-identity 2>/dev/null | jq -r ".Account")" != "x$SERV
   exit -1
 fi
 
-aws ecr get-login --region "${REGION}" --no-include-email > /dev/null
+$(aws ecr get-login --region "${REGION}" --no-include-email)
 
 keycloak_version=$(grep -E "ENV KEYCLOAK_VERSION=[0-9]+(\.[0-9]+)?.*" Docker/Dockerfile | sed 's/.*VERSION=\([0-9\.]*\).*/\1/')
 prev_version=$(aws ecr describe-images --region ${REGION} --repository-name ${REPOSITORY_NAME} | jq -r ".imageDetails[].imageTags[]" | grep "${keycloak_version}" | awk -F- '{print $NF}' | sort -rn | head -1)
